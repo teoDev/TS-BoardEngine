@@ -4,7 +4,7 @@ class Board {
     private width: number;
     private height: number;
     private ctx: CanvasRenderingContext2D;
-    private image = new Image();
+
 
 
     constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
@@ -14,12 +14,16 @@ class Board {
     }
 
      public draw = (card: Drawable, posX: number, posY: number): void => {
-         this.image.src =  card.image.imageSrc;
-         this.image.onload = (() => this.imageReadyCallback(this.ctx, card.image, posX, posY));
+         let image = new Image();
+         image.src =  card.image.imageSrc;
+         image.onload = (() => this.imageReadyCallback(this.ctx, image, card.image, posX, posY));
     }
 
-    private imageReadyCallback = (ctx: CanvasRenderingContext2D, pImage: PartialImage, posX: number, posY: number): void => {
-         this.ctx.drawImage(this.image,
+    private imageReadyCallback = (ctx: CanvasRenderingContext2D,
+        image: HTMLImageElement,
+        pImage: PartialImage,
+        posX: number, posY: number): void => {
+         this.ctx.drawImage(image,
           pImage.xPosition * pImage.width,
           pImage.yPosition * pImage.height,
           pImage.width, pImage.height, posX, posY,  pImage.width, pImage.height);

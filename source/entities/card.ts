@@ -5,6 +5,10 @@ abstract class Card implements Drawable {
 
    public posX: number;
    public posY: number;
+   public frontImage: PartialImage;
+   public backImage: PartialImage;
+
+   // actualImage
    public image: PartialImage;
 
    private type: string;
@@ -16,6 +20,21 @@ abstract class Card implements Drawable {
         this.value = $value;
         this.message = $message;
    }
+
+    public setFrontImage (image: PartialImage): void {
+         this.frontImage =  image;
+    }
+
+    public showFrontImage (): void {
+         this.image =  this.frontImage;
+    }
+
+     public setBackImage (image: PartialImage): void {
+         this.backImage =  image;
+    }
+    public showBackImage (): void {
+         this.image =  this.backImage;
+    }
 }
 
 export default Card;

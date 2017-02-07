@@ -2,9 +2,6 @@ import * as $ from "jquery";
 import Greeter from "./entities/greeter";
 import StandardDeck from "./entities/StandardDeck";
 import Board from "./entities/Board";
-import Deck from "./entities/Deck";
-
-
 
 
 let canvas: HTMLCanvasElement;
@@ -21,13 +18,11 @@ $( document ).ready(function() {
    let board = new Board(500, 500, ctx);
    let deck = new StandardDeck();
    board.draw(deck.getRandomCard(), 15, 15);
+   board.draw(deck, 100, 100);
 });
 
 
 let greeter = new Greeter("world!");
-let deck: Deck = new StandardDeck();
-deck.showAllCards();
-
 
 let msg = greeter.greet();
 console.log(msg);
