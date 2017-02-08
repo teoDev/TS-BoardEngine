@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "lib": ["es6", "dom"],
-        "types": ["mocha"],
+        "types": ["node", "mocha"],
         "sourceMap": true,
         "module": "commonjs",
         "moduleResolution": "node",
@@ -19,5 +19,5 @@
         "noUnusedParameters": false,
         "noUnusedLocals": true,
         "allowSyntheticDefaultImports": true
-              }
+    }
 }
