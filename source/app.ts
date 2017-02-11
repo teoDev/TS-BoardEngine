@@ -2,8 +2,7 @@
 import express = require("express");
 import socketio = require("socket.io");
 import http = require("http");
-import Deck from "./entities/Deck";
-
+import {Player} from "./entities/Player";
 
 let app = express();
 app.set("port", 8080);
@@ -18,38 +17,67 @@ server.listen(app.get("port"), function () {
 let counter = 0;
 
 class GameServer {
-  private tanks = [];
-  private decks = Array<Deck>();
+  private rooms: Array<GameRoom> = Array<GameRoom>();
+  private gameName: String;
+  private numberOfRoomsToStart: number = 5;
 
-  public addPlayer(tank) {
-    this.tanks.push(tank);
+  public constructor() {
+    this.gameName = "TestGame";
+    for (let _i = 0; _i < this.numberOfRoomsToStart; _i++) {
+      let room: GameRoom = new GameRoom();
+      room.roomID = _i;
+      this.addRoom(room);
+    }
   }
-  public addDeck(ball: Deck) {
-    this.decks.push(ball);
+
+  public addRoom(room: GameRoom) {
+    this.rooms.push(room);
   }
- public removeTank(tankId) {
-    this.tanks = this.tanks.filter(function (t) { return t.id !== tankId; });
+
+  public getRooms(): Array<GameRoom>  {
+   return this.rooms;
+  }
+
+  public getRoomById(roomID: number): GameRoom  {
+   return this.rooms[roomID];
   }
   public sync() {
     console.log("sync");
   }
 }
 
+class GameRoom {
+  public players = new Array<Player>();
+  public roomID: number;
+  public isFull: Boolean = false;
 
-let game = new GameServer();
+  public addPlayer(player: Player) {
+    this.players.push(player);
+    console.log(player.name + " joined room: " + this.roomID);
+  }
+}
+let gameServer = new GameServer();
 
 io.on("connection", function (client) {
   console.log("User connected");
+ // joined for specified game
+  client.on("joinGame", function (player: Player, gameRoomIdToJoin: number) {
+    console.log(player.name + " joined the game");
+     gameServer.getRooms().forEach(function (gameRoom: GameRoom) {
+      console.log();
+    })
+    let roomToJoin: GameRoom  = gameServer.getRoomById(gameRoomIdToJoin);
+    if (roomToJoin !== undefined) {
+      roomToJoin.addPlayer(player);
+    }
 
-  client.on("joinGame", function (tank) {
-    console.log(tank.id + " joined the game");
-    game.addPlayer({ id: tank.id, type: tank.type, hp: 2 });
+   //  gameServer.addPlayer({ id: tank.id, type: tank.type, hp: 2 });
   });
 
   client.on("sync", function (data) {
     // Receive data from clients
     if (data.tank !== undefined) {
-      game.sync();
+      gameServer.sync();
     }
 
     counter++;
@@ -59,10 +87,10 @@ io.on("connection", function (client) {
     console.log("pickCard");
   });
 
-  client.on("leaveGame", function (tankId) {
-    console.log(tankId + " has left the game");
-    game.removeTank(tankId);
-    client.broadcast.emit("removeTank", tankId);
+  client.on("leaveGame", function (player: Player) {
+    console.log(player.name + " has left the game");
+    // gameServer.removeTank(tankId);
+    client.broadcast.emit("removePlayer", player);
   });
 
 });

@@ -1,14 +1,11 @@
 import StandardCard from "./StandardCard";
-import Card from "./Card";
 import Deck from "./Deck";
 import {CardSuit} from "./CardColor";
 import {PartialImage} from "../entities/PartialImage";
 
 
 
-class StandardDeck extends Deck {
-     public cards:  Array<Card> = [];
-
+export class StandardDeck extends Deck {
     constructor() {
         super();
         super.setDeckImage( new PartialImage("img/cardBack.png", 0, 0, 73, 98));
@@ -30,4 +27,3 @@ class StandardDeck extends Deck {
 
 }
 
-export default StandardDeck;

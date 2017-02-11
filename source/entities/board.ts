@@ -1,6 +1,6 @@
 import {Drawable} from "../interfaces/Drawable";
 import {PartialImage} from "./PartialImage";
-class Board {
+export class Board {
     private width: number;
     private height: number;
     private ctx: CanvasRenderingContext2D;
@@ -31,4 +31,3 @@ class Board {
 
 }
 
-export default Board;

@@ -18,6 +18,7 @@
         "suppressImplicitAnyIndexErrors": true,
         "noUnusedParameters": false,
         "noUnusedLocals": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "alwaysStrict": true
     }
 }

@@ -1,7 +1,7 @@
 import * as $ from "jquery";
-import Greeter from "./entities/greeter";
-import StandardDeck from "./entities/StandardDeck";
-import Board from "./entities/Board";
+import { Player } from "./entities/Player";
+import { StandardDeck } from "./entities/StandardDeck";
+import { Board } from "./entities/board";
 import * as socketIo from "socket.io-client";
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -22,8 +22,6 @@ class SocketService {
     }
 
 }
-
-
 
 
 let socketService = new SocketService();
@@ -50,13 +48,9 @@ $( document ).ready(function() {
 
 function joinGame(socket) {
   if (socket !== undefined) {
-    socket.emit("joinGame", { id: "12" });
+    let player = new Player();
+    player.name = "tolek";
+    socket.emit("joinGame", player, 1);
   }
 }
 
-
-
-let greeter = new Greeter("world!");
-
-let msg = greeter.greet();
-console.log(msg);

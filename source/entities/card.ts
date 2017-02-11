@@ -1,7 +1,8 @@
 import {Drawable} from "../interfaces/Drawable";
+import { GameElement } from "./GameElement";
 import {PartialImage} from "../entities/PartialImage";
 
-abstract class Card implements Drawable {
+export abstract class Card extends GameElement implements Drawable {
 
    public posX: number;
    public posY: number;
@@ -16,6 +17,7 @@ abstract class Card implements Drawable {
    private message: string;
 
    constructor($type: string, $value: string, $message: string) {
+       super();
         this.type = $type;
         this.value = $value;
         this.message = $message;
