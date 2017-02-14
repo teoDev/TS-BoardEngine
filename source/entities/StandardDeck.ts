@@ -1,4 +1,4 @@
-import StandardCard from "./StandardCard";
+import {StandardCard} from "./StandardCard";
 import Deck from "./Deck";
 import {CardSuit} from "./CardColor";
 import {PartialImage} from "../entities/PartialImage";

@@ -1,7 +1,7 @@
 import Card from "./Card";
 import {PartialImage} from "../entities/PartialImage";
 import {CardSuit} from "./CardColor";
-class StandardCard extends Card  {
+export class StandardCard extends Card  {
 
     public rank: number;
 
@@ -14,4 +14,3 @@ class StandardCard extends Card  {
 
 }
 
-export default StandardCard;

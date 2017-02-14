@@ -25,6 +25,7 @@ gulp.task("lint", function() {
     
     return gulp.src([
         "source/**/**.ts",
+         "source/**/**.tsx",
         "test/**/**.test.ts"
     ])
     .pipe(tslint(config))
@@ -40,6 +41,7 @@ var tsProject = tsc.createProject("tsconfig.json");
 gulp.task("build-app", function() {
     return gulp.src([
             "source/**/**.ts",
+             "source/**/**.tsx",
             "typings/main.d.ts/",
             "source/interfaces/interfaces.d.ts"
         ])
@@ -120,7 +122,7 @@ gulp.task("watch", ["default"], function () {
         server: "."
     });
     
-    gulp.watch([ "source/**/**.ts", "test/**/*.ts"], ["default"]);
+    gulp.watch([ "source/**/**.ts", "test/**/*.ts", "source/**/**.tsx"], ["default"]);
     gulp.watch("dist/*.js").on('change', browserSync.reload); 
 });
 
@@ -128,5 +130,6 @@ gulp.task("watch", ["default"], function () {
 //* DEFAULT
 //******************************************************************************
 gulp.task("default", function (cb) {
-    runSequence("lint", "build", "test", "bundle", cb);
+    runSequence( "build", "test", "bundle", cb);
+    //     runSequence("lint", "build", "test", "bundle", cb);
 });
