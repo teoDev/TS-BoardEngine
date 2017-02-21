@@ -1,6 +1,9 @@
 {
   "extends": ["tslint:latest", "tslint-react"],
   "rules": {
+    "max-classes-per-file": [
+      false
+    ],
     "class-name": true,
     "comment-format": [true, "check-space"],
     "curly": true,

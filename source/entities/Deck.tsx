@@ -3,12 +3,11 @@ import {GameElement} from "./GameElement";
 import {Drawable} from "../interfaces/Drawable";
 import {PartialImage} from "../entities/PartialImage";
 
+
 abstract class Deck extends GameElement implements Drawable  {
-    public cards:  Array<Card>  = Array<Card>();
+    public cards:  Card[]  = Array<Card>();
     public showAllCards: () => void;
-
     public image: PartialImage;
-
 
     /**
      * setImage

@@ -1,8 +1,8 @@
 import * as $ from "jquery";
-import { Player } from "./entities/Player";
-import { BoardView } from "./templates/components/board";
-
 import * as React from "react";
+import { Player } from "./entities/Player";
+import { WarGame } from "./example_games/WarGame/WarGame";
+
 import * as ReactDOM from "react-dom";
 import * as socketIo from "socket.io-client";
 
@@ -32,22 +32,17 @@ function gameLoop() {
 }
 
 $( document ).ready(function() {
-// canvas =  $("#myCanvas").get(0) as HTMLCanvasElement;
- //ctx = canvas.getContext("2d");
-// gameLoop();
- //let board = new Board(500, 500, ctx);
-// let deck = new StandardDeck();
- //board.draw(deck.getRandomCard(), 15, 15);
- //board.draw(deck, 100, 100);
-
+ let game = new WarGame();
+ let boardView =  game.board.getView();
+ let element =  React.createElement(boardView, {});
  ReactDOM.render(
-        <BoardView text="sada"/>
+      element
         ,
     document.getElementById("board"),
 );
 
 
- $("#getCard").click(function () {
+ $("#getCard").click(function() {
      joinGame(io);
   });
 });

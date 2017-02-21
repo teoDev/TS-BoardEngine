@@ -1,12 +1,13 @@
 
 import * as React from "react";
 import * as ReactBootstrap from "react-bootstrap";
+import {PubSub} from "../../utils/PubSub";
+
 
 const {
   Grid,
   Row,
   Col,
-  Image,
 } = ReactBootstrap;
 
 const rowStyle = {
@@ -29,67 +30,90 @@ const playerTileStyle = {
       border: "2px dashed #551600",
    borderRadius: "1px",
    height: "100%",
-   padding: "2%,2%,2%,2%",
+};
+
+const cardStyle = {
+      padding: "10%",
 };
 
 
-export interface BoardViewProps {
-    text: string;
+
+
+
+ class BoardTile extends React.Component<{playerID}, {}> {
+
+   public state: {imgSrc, playerID };
+   public containers = [];
+   private c1  =  <Col xs={4} className="deck" style={cardStyle}/>;
+   private c2  =  <Col xs={4} className="neutral"/>;
+   private c3  =  <Col xs={4} className="cards" />;
+
+   constructor(){
+     super();
+     this.state = {
+       imgSrc : "",
+       playerID: "",
+     }
+     this.containers = [this.c1, this.c2, this.c3];
+   }
+    public render() {
+    return (
+      <div id={"player_container_" + this.props.playerID}>
+          <Row style={playerTileStyle}>
+            {this.c1}
+            {this.c2}
+            {this.c3}
+          </Row>
+      </div>
+    );
+  }
+
+
+   public componentWillMount() {
+    this.state.playerID = this.props.playerID;
+    PubSub.subscribe("drawCard", function(msg, data){
+      if (msg.playerID === this.state.playerID ){
+         this.setState({
+        imgSrc : ".jpg",
+      });
+      }
+    }.bind(this) );
+   }
 }
 
-export interface BoardViewContext {
-    text: string;
-}
 
-export class BoardView extends React.Component<BoardViewProps, BoardViewContext> {
+export class BoardView extends React.Component<{}, {}> {
+
+   public player1Container =  <BoardTile playerID={1}/>;
+   public player2Container =  <BoardTile playerID={2}/>;
+   public player3Container =  <BoardTile playerID={3}/>;
+   public player4Container =  <BoardTile playerID={4}/>;
+
+   public constructor() {
+     super();
+   }
+
     public render() {
     return (
        <Grid style={boardStyle} >
           <Row style={rowStyle}>
             <Col xs={6} style={colStyle}>
-              <BoardTile/>
+              {this.player1Container}
             </Col>
             <Col xs={6} style={colStyle}>
-              <BoardTile/>
+              {this.player2Container}
             </Col>
           </Row>
           <Row style={rowStyle}>
             <Col xs={6} style={colStyle}>
-              <BoardTile/>
+              {this.player3Container}
             </Col>
            <Col xs={6} style={colStyle}>
-              <BoardTile/>
+              {this.player4Container}
             </Col>
           </Row>
         </Grid>
     );
   }
 }
-
-
-// tslint:disable-next-line:max-classes-per-file
-export class BoardTile extends React.Component<{}, {}> {
-    public render() {
-    return (
-          <Row style={playerTileStyle}>
-            <Col xs={4} className="deck">
-                <DeckView/>
-            </Col>
-            <Col xs={4} className="neutral"/>
-            <Col xs={4} className="cards" />
-          </Row>
-    );
-  }
-}
-
-
-// tslint:disable-next-line:max-classes-per-file
-export class DeckView extends React.Component<{}, {}> {
-    public render() {
-    return (
-         <Image src="./././img/cardBack.png" responsive />
-    );
-  }
-}
-
 
