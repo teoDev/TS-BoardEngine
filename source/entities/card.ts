@@ -1,42 +1,47 @@
 import {Drawable} from "../interfaces/Drawable";
 import { GameElement } from "./GameElement";
-import {PartialImage} from "../entities/PartialImage";
 
 export abstract class Card extends GameElement implements Drawable {
 
    public posX: number;
    public posY: number;
-   public frontImage: PartialImage;
-   public backImage: PartialImage;
+   public frontImage;
+   public backImage;
 
    // actualImage
-   public image: PartialImage;
+   public imgSRC;
 
    private type: string;
-   private value: string;
+   private value: number;
    private message: string;
 
-   constructor($type: string, $value: string, $message: string) {
+   constructor($type: string, $value: number, $message: string) {
        super();
-        this.type = $type;
-        this.value = $value;
-        this.message = $message;
+       this.type = $type;
+       this.value = $value;
+       this.message = $message;
+       this.frontImage =  this.imgSRC;
    }
 
-    public setFrontImage (image: PartialImage): void {
+    public setFrontImage(image): void {
          this.frontImage =  image;
     }
 
-    public showFrontImage (): void {
-         this.image =  this.frontImage;
+    public showFrontImage(): void {
+         this.imgSRC =  this.frontImage;
     }
 
-     public setBackImage (image: PartialImage): void {
+     public setBackImage(image): void {
          this.backImage =  image;
     }
-    public showBackImage (): void {
-         this.image =  this.backImage;
+    public showBackImage(): void {
+         this.imgSRC =  this.backImage;
     }
+
+    public getValue(): number {
+         return this.value;
+    }
+
 }
 
 export default Card;

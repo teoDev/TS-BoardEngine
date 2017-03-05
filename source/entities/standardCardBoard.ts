@@ -1,5 +1,4 @@
 import {Board} from "./board";
-import {BoardView} from "../templates/components/board";
 
 
 export class StandardCardBoard extends Board {
@@ -7,7 +6,7 @@ export class StandardCardBoard extends Board {
 
     constructor(width: number, height: number) {
         super(width, height);
-        this.view =  BoardView as React.ComponentClass<any>;
+        this.imgSRC = "img/board.png";
     }
 
     public getView() {

@@ -1,9 +1,7 @@
 import * as $ from "jquery";
-import * as React from "react";
 import { Player } from "./entities/Player";
 import { WarGame } from "./example_games/WarGame/WarGame";
 
-import * as ReactDOM from "react-dom";
 import * as socketIo from "socket.io-client";
 
 class SocketService {
@@ -22,34 +20,22 @@ class SocketService {
     }
 
 }
-
-
 const socketService = new SocketService();
 const io = socketService.getSocket();
 
-function gameLoop() {
-   requestAnimationFrame(gameLoop);
-}
 
 $( document ).ready(function() {
- let game = new WarGame();
- let boardView =  game.board.getView();
- let element =  React.createElement(boardView, {});
- ReactDOM.render(
-      element
-        ,
-    document.getElementById("board"),
-);
-
-
- $("#getCard").click(function() {
-     joinGame(io);
-  });
+ const warGame = new WarGame([new Player("tolek"), new Player("bolek")]);
+ warGame.socket = io;
+ warGame.start();
+ joinGame(io);
+ warGame.initGame();
 });
+
 
 function joinGame(socket) {
   if (socket !== undefined) {
-    const player = new Player();
+    const player = new Player("zosia");
     player.name = "tolek";
     socket.emit("joinGame", player, 1);
   }

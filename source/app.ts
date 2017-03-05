@@ -1,4 +1,5 @@
-﻿
+﻿import {GameElement} from './entities/GameElement';
+
 import express = require("express");
 import socketio = require("socket.io");
 import http = require("http");
@@ -81,6 +82,13 @@ io.on("connection", function (client) {
     }
 
     counter++;
+  });
+
+  client.on("addGameElement", function (data) {
+    // Receive data from clients
+    let gameElement: GameElement = data.gameElement;
+    console.log("initGame");
+    console.log(data,gameElement);
   });
 
   client.on("pickCard", function () {

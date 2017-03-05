@@ -1,4 +1,11 @@
-import {PartialImage} from "../entities/PartialImage";
 export interface Drawable {
-     image: PartialImage;
+       imgSRC;
+       scaleX:number;
+       scaleY:number;
+
+       posX:number;
+       posY:number;
+       img:createjs.Bitmap;
+
+
 }
