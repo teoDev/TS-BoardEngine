@@ -3,8 +3,6 @@ export interface Drawable {
        scaleX:number;
        scaleY:number;
 
-       posX:number;
-       posY:number;
        img:createjs.Bitmap;
 
 

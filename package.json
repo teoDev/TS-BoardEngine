@@ -47,6 +47,7 @@
   "dependencies": {
     "@types/createjs": "0.0.29",
     "@types/node": "^7.0.5",
+    "@types/object-hash": "^0.5.28",
     "@types/react": "^15.0.9",
     "@types/react-bootstrap": "0.0.44",
     "@types/react-dom": "^0.14.23",
@@ -57,6 +58,7 @@
     "easeljs": "0.0.0",
     "express": "^4.14.1",
     "jquery": "^3.1.1",
+    "object-hash": "^1.1.7",
     "react-bootstrap": "^0.30.7",
     "tslint-react": "^2.3.0"
   }

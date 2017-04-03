@@ -1,4 +1,6 @@
-﻿import {GameElement} from './entities/GameElement';
+﻿import {WarGame} from './example_games/WarGame/WarGame';
+import {WarGameController} from './example_games/WarGame/controller/WarGameController';
+import {GameElement} from './entities/GameElement';
 
 import express = require("express");
 import socketio = require("socket.io");
@@ -65,7 +67,7 @@ io.on("connection", function (client) {
   client.on("joinGame", function (player: Player, gameRoomIdToJoin: number) {
     console.log(player.name + " joined the game");
      gameServer.getRooms().forEach(function (gameRoom: GameRoom) {
-      console.log();
+      console.log("room");
     })
     let roomToJoin: GameRoom  = gameServer.getRoomById(gameRoomIdToJoin);
     if (roomToJoin !== undefined) {
@@ -82,6 +84,13 @@ io.on("connection", function (client) {
     }
 
     counter++;
+  });
+
+  client.on("initGame", function (data) {
+   const warGame = new WarGame([new Player("tolek"), new Player("bolek")]);
+   const warGameController = new WarGameController(warGame, client);
+   client.emit("initGame", {game: warGame});
+   warGameController.start();
   });
 
   client.on("addGameElement", function (data) {

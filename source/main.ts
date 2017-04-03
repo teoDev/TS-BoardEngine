@@ -1,6 +1,7 @@
 import * as $ from "jquery";
-import { Player } from "./entities/Player";
 import { WarGame } from "./example_games/WarGame/WarGame";
+import { Player } from "./entities/Player";
+import { WarGameView } from "./example_games/WarGame/View/WarGamView";
 
 import * as socketIo from "socket.io-client";
 
@@ -25,11 +26,16 @@ const io = socketService.getSocket();
 
 
 $( document ).ready(function() {
- const warGame = new WarGame([new Player("tolek"), new Player("bolek")]);
- warGame.socket = io;
- warGame.start();
+ io.emit("initGame", {});
  joinGame(io);
- warGame.initGame();
+
+ io.on("initGame", function (data) {
+   console.log("Data from server:", data.game);
+   // let warGameController = new WarGameController(data.game as WarGame);
+   let warGameView = new WarGameView(data.game as WarGame, io);
+
+   warGameView.initRender();
+  });
 });
 
 

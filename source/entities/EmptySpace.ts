@@ -1,18 +1,15 @@
-import {Drawable} from "../interfaces/Drawable";
 import { GameElement } from "./GameElement";
 
-export  class EmptySpace extends GameElement implements Drawable {
+export  class EmptySpace extends GameElement {
 
    public posX: number;
    public posY: number;
 
-   public elements:  GameElement[]  = [];
+   public elements:  GameElement[];
 
    constructor() {
        super();
-       this.imgSRC = "img/cardSpot.png";
-       this.scaleX = 1.3;
-       this.scaleY = 1.2;
+       this.elements = [];
    }
 
    public empty() {
@@ -26,4 +23,3 @@ export  class EmptySpace extends GameElement implements Drawable {
 
 }
 
-export default EmptySpace;

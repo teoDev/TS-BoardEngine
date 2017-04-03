@@ -3,7 +3,12 @@ import {EmptySpace} from "./EmptySpace";
 
 export  class CardSpace extends EmptySpace  {
 
-   public cards:  Card[]  = [];
+   public cards:  Card[];
+
+   constructor(){
+       super();
+       this.cards = [];
+   }
 
    public empty() {
        this.cards = [];
@@ -17,4 +22,3 @@ export  class CardSpace extends EmptySpace  {
 
 }
 
-export default CardSpace;
