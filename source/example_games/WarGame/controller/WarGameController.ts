@@ -1,3 +1,5 @@
+import {CollectSpace} from '../../../entities/CollectSpace';
+import {Deck} from '../../../entities/Deck';
 import {Card} from '../../../entities/card';
 import { GameElementController } from "./../../../controller/GameElementController";
 import {WarGame} from '../WarGame';
@@ -5,7 +7,6 @@ import { DeckController } from "./../../../controller/DeckController";
 import { GameController } from "./../../../controller/GameController";
 
 export class WarGameController extends GameController {
-    public model: WarGame;
 
     public deckController: DeckController;
     public deck2Controller: DeckController;
@@ -16,50 +17,59 @@ export class WarGameController extends GameController {
 
    constructor(model: WarGame, socket) {
        super(model);
+
+       this.addGameElement(model.cardSpot);
+       this.addGameElement(model.cardSpot_2);
+       this.addGameElement(model.deck_1);
+       this.addGameElement(model.deck_2);
+       this.addGameElement(model.player1CollectSpace);
+       this.addGameElement(model.player2CollectSpace);
+
        this.socket = socket;
        this.model.cardsINturn = [] ;
-       this.deckController = new DeckController(this.model.deck_1);
-       this.deck2Controller = new DeckController(this.model.deck_2);
+       this.deckController = new DeckController(model.deck_1);
+       this.deck2Controller = new DeckController(model.deck_2);
+       this.deckController.assignCardSpace(model.cardSpot);
+       this.deck2Controller.assignCardSpace(model.cardSpot_2);
 
-       this.player1CollectSpaceController = new GameElementController(this.model.player1CollectSpace);
-       this.player2CollectSpaceController = new GameElementController(this.model.player2CollectSpace);
+       this.player1CollectSpaceController = new GameElementController(model.player1CollectSpace);
+       this.player2CollectSpaceController = new GameElementController(model.player2CollectSpace);
 
-       this.model.deck_1.player = this.model.player_1;
-       this.deckController.assignCardSpace(this.model.cardSpot);
+       this.assignElementToPlayer(model.deck_1, model.player_1);
+       this.assignElementToPlayer(model.player1CollectSpace, model.player_1);
+       this.assignElementToPlayer(model.deck_2, model.player_2);
+       this.assignElementToPlayer(model.player2CollectSpace, model.player_2);
 
-       this.model.deck_2.player = this.model.player_2;
-
-       this.deck2Controller.assignCardSpace(this.model.cardSpot_2);
-
-
-       // this.player1CollectSpaceController.assignToPlayer(this.model.player_1);
-       // this.player2CollectSpaceController.assignToPlayer(this.model.player_2);
-       const that = this;
-       this.socket.on("getRandomCard$Request",  (data) => {
-           console.log("getRandomCard");
-           const card: Card = that.deckController.getRandomCard();
-           that.model.cardsINturn.push(card);
-           that.socket.emit("getRandomCard$Response", card );
-           if (that.deckController.model.cards.length === 0) {
+       this.socket.on("getRandomCard$Request",  (deckHash) => { // data = deck
+           const deck: Deck =  this.getGameElementByHash(deckHash) as Deck;
+           const card: Card = this.deckController.getRandomCard();
+           this.assignElementToPlayer(card, deck.player); // assign card to player
+           card.posX  = deck.cardSpace.posX;
+           card.posY  = deck.cardSpace.posY;
+           this.model.cardsINturn.push(card);
+           this.socket.emit("getRandomCard$Response", card );
+           if (this.deckController.model.cards.length === 0) {
                    //  that.removeElement(deckView);
             }
-           if (that.model.cardsINturn.length % 2 === 0) {
-                   const winningCards = that.compareCards();
+           if (this.model.cardsINturn.length % 2 === 0) {
+                   const winningCards = this.compareCards();
                    if (winningCards.length === 1) {
-                       that.collectCardsForWinner(winningCards[0]);
+                       this.collectCardsForWinner(winningCards[0]);
                     }
             }
        });
   };
 
-    public collectCardsForWinner(winCard: Card){
+    public collectCardsForWinner(winCard: Card) {
+                console.log("winner: ", winCard.player);
+                let collectSpace: CollectSpace;
+                collectSpace = this.getElementsAssignedToPlayerByType(winCard.player, CollectSpace.name).pop() as CollectSpace;
+
                 for (const cardToCollect of this.model.cardsINturn) {
-                        console.log(cardToCollect);
-                        const collectSpace = this.model.player1CollectSpace;
                         cardToCollect.setPosition( collectSpace.posX + 100,  collectSpace.posY);
                         this.socket.emit("updateCardPosition$Request", cardToCollect );
                         // cardToCollect.img.rotation = Math.floor(Math.random() * 360) + 1;
-                        // cardToCollect.updateView();
+                        //cardToCollect.updateView();
                         this.model.cardsINturn = [];
                 }
         };

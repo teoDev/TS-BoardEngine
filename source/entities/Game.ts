@@ -1,3 +1,4 @@
+import {Card} from './card';
 import { Board } from "./board";
 import { GameElement } from "./GameElement";
 import { Player } from "./Player";
@@ -9,30 +10,20 @@ export class Game  {
     public board: Board;
     public gameElements: GameElement[] ;
     public playerTurn: Player;
+    public cardsINturn: Card[];
+    public elementsAssignedToPlayers: Map<string, GameElement[]>; // key:playerID
 
    constructor() {
         this.gameElements = [];
         this.players = [];
         this.playersQueue = [];
+        this.elementsAssignedToPlayers = new Map<string, GameElement[]>();
    }
 
-
-    public addGameElement( gameElement: GameElement) {
-        this.gameElements.push(gameElement);
-    }
-
-    public addPlayer( playerToAdd: Player) {
-        this.players.push(playerToAdd);
-    }
-
-    public initPlayerQueue(random: boolean) {
-        for (const player of this.players) {
-             this.playersQueue.push(player);
-        }
-    }
-    public getGameElements( ): GameElement[] {
+   public getGameElements( ): GameElement[] {
         return this.gameElements;
     }
+
 
 }
 

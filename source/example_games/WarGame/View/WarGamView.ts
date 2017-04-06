@@ -1,4 +1,6 @@
+import {Deck} from '../../../entities/Deck';
 import {CardView} from "../../../view/CardView";
+import { StandardDeck } from "./../../../entities/StandardDeck";
 import {StandardCard} from "../../../entities/standardCard";
 import {DeckView} from "../../../view/DeckView";
 import { EmptySpaceView } from "./../../../view/EmptySpaceView";
@@ -49,29 +51,27 @@ export class WarGameView extends GameView {
        this.gameViewElements.push(this.cardSpaceView_2);
 
        this.cardsViews = [];
-
-       const that = this;
-
-       const clickDeckCallback = () => {
+       const clickDeckCallback = ( deck, event) => {
           // const deckView: DeckView = this;
-           socket.emit("getRandomCard$Request");
+           const deckModel: Deck  = deck as StandardDeck;
+           socket.emit("getRandomCard$Request", deckModel.hash);
+           console.log(deck);
            socket.on("getRandomCard$Response", (data: StandardCard) => {
                  const card: Card = data as StandardCard;
                  const cardView: StandardCardView = new StandardCardView(card);
-                 that.cardsViews.push(cardView);
-                 that.drawElement(cardView);
+                 this.cardsViews.push(cardView);
+                 this.drawElement(cardView);
            });
            // that.model.playerTurn = that.controller.getNextPlayer();
        };
 
-
-       this.deckView.onClick(clickDeckCallback.bind(this.deckView));
-       this.deck2View.onClick(clickDeckCallback.bind(this.deck2View));
+       this.deckView.onClick(clickDeckCallback);
+       this.deck2View.onClick(clickDeckCallback);
 
        this.socket.on("updateCardPosition$Request", (data) => {
            console.log("updatePosition");
            const card: Card = data as StandardCard;
-           for (const cardView  of  that.cardsViews) {
+           for (const cardView  of  this.cardsViews) {
                     if (cardView.model.hash === card.hash) {
                         console.log(card);
                         const stCardView: CardView = cardView;

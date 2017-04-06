@@ -6,12 +6,11 @@ export abstract class GameElement  {
     public posX = 0;
     public posY= 0;
     public hash;
+    public player: Player;
 
     constructor(){
         this.hash = this.genHashCode();
     }
-
-    public player: Player;
 
     public setPosition(x: number, y: number) {
         this.posX = x;

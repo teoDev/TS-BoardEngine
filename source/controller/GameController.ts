@@ -39,6 +39,49 @@ export class GameController  {
        return player; // get new player;
     }
 
+
+    public getGameElementByHash( hash: string): GameElement {
+        for (const gameElement of this.model.gameElements) {
+             if (gameElement.hash ===  hash) {
+                 return gameElement;
+             }
+        }
+    }
+
+     public assignElementToPlayer( gameEl: GameElement, player: Player) {
+        gameEl.player = player;
+        let gameElements: GameElement[];
+        if (this.model.elementsAssignedToPlayers.get(player.name) === undefined) {
+            gameElements = [];
+        }else {
+            gameElements = this.model.elementsAssignedToPlayers.get(player.name);
+        }
+        gameElements.push(gameEl);
+        this.model.elementsAssignedToPlayers.set(player.name,gameElements);
+    }
+
+     public getElementsAssignedToPlayer(player: Player): GameElement[] {
+        const gameElements: GameElement[]  = [];
+        if (this.model.elementsAssignedToPlayers.get(player.name) !== undefined) {
+             return this.model.elementsAssignedToPlayers.get(player.name);
+        }
+        return gameElements;
+    }
+
+    public getElementsAssignedToPlayerByType(player: Player, type: string): GameElement[] {
+        const gameElements: GameElement[]  = [];
+        if (this.model.elementsAssignedToPlayers.get(player.name) !== undefined) {
+             for (const gameEl of this.model.elementsAssignedToPlayers.get(player.name)) {
+                      if (gameEl.constructor.name === type) {
+                          gameElements.push(gameEl);
+                      }
+                }
+        }
+        return gameElements;
+    }
+
+
+
 }
 
 

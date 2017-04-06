@@ -77,7 +77,7 @@ export class GameView  {
              }
              // assign click callback
         if (gameElementView.clickCallback !== undefined){
-                 gameElementImg.on("click", gameElementView.clickCallback);
+                 gameElementImg.on("click", gameElementView.clickCallback.bind(null,gameElementView.model));
              }
         gameElementImg.scaleX =  gameElementView.scaleX;
         gameElementImg.scaleY =  gameElementView.scaleY;
@@ -89,7 +89,7 @@ export class GameView  {
         this.boardContainer.removeChild(gameElementView.img);
     }
 
-      private resize(){
+      private resize()  {
          const w = window.innerWidth -10;
          const h = window.innerHeight -10 ;
          const html5Canvas =  this.stage.canvas as HTMLCanvasElement;
