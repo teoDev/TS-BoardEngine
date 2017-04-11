@@ -34,7 +34,6 @@ export class WarGameView extends GameView {
    constructor(model: WarGame, socket) {
        super(model );
        this.socket = socket;
-       this.model.cardsINturn = [] ;
        this.deckController =  new DeckController(this.model.deck_1);
        this.deck2Controller = new DeckController(this.model.deck_2);
 
@@ -52,18 +51,16 @@ export class WarGameView extends GameView {
 
        this.cardsViews = [];
        const clickDeckCallback = ( deck, event) => {
-          // const deckView: DeckView = this;
            const deckModel: Deck  = deck as StandardDeck;
-           socket.emit("getRandomCard$Request", deckModel.hash);
-           console.log(deck);
-           socket.on("getRandomCard$Response", (data: StandardCard) => {
+           socket.emit("getRandomCard$Request", this.model.player, deckModel.hash);
+
+       };
+       this.socket.on("getRandomCard$Response", (data: StandardCard) => {
                  const card: Card = data as StandardCard;
                  const cardView: StandardCardView = new StandardCardView(card);
                  this.cardsViews.push(cardView);
                  this.drawElement(cardView);
            });
-           // that.model.playerTurn = that.controller.getNextPlayer();
-       };
 
        this.deckView.onClick(clickDeckCallback);
        this.deck2View.onClick(clickDeckCallback);
@@ -73,7 +70,6 @@ export class WarGameView extends GameView {
            const card: Card = data as StandardCard;
            for (const cardView  of  this.cardsViews) {
                     if (cardView.model.hash === card.hash) {
-                        console.log(card);
                         const stCardView: CardView = cardView;
                         stCardView.model = card;
                         cardView.updatePosition();

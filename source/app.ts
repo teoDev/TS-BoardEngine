@@ -1,33 +1,33 @@
-﻿import {WarGame} from './example_games/WarGame/WarGame';
+﻿import {Game} from './entities/Game';
+import {WarGame} from './example_games/WarGame/WarGame';
 import {WarGameController} from './example_games/WarGame/controller/WarGameController';
-import {GameElement} from './entities/GameElement';
 
 import express = require("express");
 import socketio = require("socket.io");
 import http = require("http");
 import {Player} from "./entities/Player";
 
-let app = express();
+const app = express();
 app.set("port", 8080);
 
 
-let server = http.createServer(app);
-let io = socketio(server);
-server.listen(app.get("port"), function () {
+const server = http.createServer(app);
+const io = socketio(server);
+server.listen(app.get("port"),  () => {
   console.log("Express server listening on port " + app.get("port"));
 });
 
 let counter = 0;
 
 class GameServer {
-  private rooms: Array<GameRoom> = Array<GameRoom>();
+  private rooms: GameRoom[] = Array<GameRoom>();
   private gameName: String;
   private numberOfRoomsToStart: number = 5;
 
   public constructor() {
     this.gameName = "TestGame";
     for (let _i = 0; _i < this.numberOfRoomsToStart; _i++) {
-      let room: GameRoom = new GameRoom();
+      const room: GameRoom = new GameRoom();
       room.roomID = _i;
       this.addRoom(room);
     }
@@ -37,7 +37,7 @@ class GameServer {
     this.rooms.push(room);
   }
 
-  public getRooms(): Array<GameRoom>  {
+  public getRooms():  GameRoom[]  {
    return this.rooms;
   }
 
@@ -53,31 +53,54 @@ class GameRoom {
   public players = new Array<Player>();
   public roomID: number;
   public isFull: Boolean = false;
+  public game: Game;
+  public sockets = [];
 
   public addPlayer(player: Player) {
     this.players.push(player);
     console.log(player.name + " joined room: " + this.roomID);
+    if (this.players.length === 2 ) {
+      this.isFull = true;
+    }
+  }
+
+  public initGame() {
+   console.log("INIT GAME");
+   const warGame = new WarGame(this.players);
+   const warGameController = new WarGameController(warGame, this.sockets); //pass room socket
+   io.in("room_" + this.roomID).emit("initGame", {game: warGame});
+   warGameController.start();
   }
 }
-let gameServer = new GameServer();
+const gameServer = new GameServer();
 
-io.on("connection", function (client) {
+io.on("connection",  (client) => {
   console.log("User connected");
- // joined for specified game
-  client.on("joinGame", function (player: Player, gameRoomIdToJoin: number) {
-    console.log(player.name + " joined the game");
-     gameServer.getRooms().forEach(function (gameRoom: GameRoom) {
-      console.log("room");
-    })
-    let roomToJoin: GameRoom  = gameServer.getRoomById(gameRoomIdToJoin);
-    if (roomToJoin !== undefined) {
-      roomToJoin.addPlayer(player);
-    }
 
-   //  gameServer.addPlayer({ id: tank.id, type: tank.type, hp: 2 });
+ // joined for specified game
+  client.on("joinGame",  (playerName) => {
+    let roomToJoin: GameRoom ;
+    for (const gameRoom of gameServer.getRooms()) {
+        // get first not full room to join
+        if (!gameRoom.isFull){
+                roomToJoin = gameRoom;
+                break;
+              }
+        }
+    console.log(playerName + " joined the game in room:", roomToJoin.roomID);
+    client.join("room_" + roomToJoin.roomID);
+    if (roomToJoin !== undefined) {
+      const player = new Player(playerName + "_" + roomToJoin.players.length);
+      roomToJoin.addPlayer(player);
+      roomToJoin.sockets.push(client);
+      client.emit("joinGame$Respond", player);
+      if (roomToJoin.isFull) {
+       roomToJoin.initGame();
+      }
+    }
   });
 
-  client.on("sync", function (data) {
+  client.on("sync",  (data) => {
     // Receive data from clients
     if (data.tank !== undefined) {
       gameServer.sync();
@@ -86,27 +109,8 @@ io.on("connection", function (client) {
     counter++;
   });
 
-  client.on("initGame", function (data) {
-   const warGame = new WarGame([new Player("tolek"), new Player("bolek")]);
-   const warGameController = new WarGameController(warGame, client);
-   client.emit("initGame", {game: warGame});
-   warGameController.start();
-  });
-
-  client.on("addGameElement", function (data) {
-    // Receive data from clients
-    let gameElement: GameElement = data.gameElement;
-    console.log("initGame");
-    console.log(data,gameElement);
-  });
-
-  client.on("pickCard", function () {
-    console.log("pickCard");
-  });
-
-  client.on("leaveGame", function (player: Player) {
+  client.on("leaveGame",  (player: Player) => {
     console.log(player.name + " has left the game");
-    // gameServer.removeTank(tankId);
     client.broadcast.emit("removePlayer", player);
   });
 

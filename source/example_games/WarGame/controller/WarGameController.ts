@@ -14,6 +14,8 @@ export class WarGameController extends GameController {
     public player1CollectSpaceController: GameElementController;
     public player2CollectSpaceController: GameElementController;
 
+    public sockets= [];
+
 
    constructor(model: WarGame, socket) {
        super(model);
@@ -25,7 +27,7 @@ export class WarGameController extends GameController {
        this.addGameElement(model.player1CollectSpace);
        this.addGameElement(model.player2CollectSpace);
 
-       this.socket = socket;
+       this.sockets = socket;
        this.model.cardsINturn = [] ;
        this.deckController = new DeckController(model.deck_1);
        this.deck2Controller = new DeckController(model.deck_2);
@@ -40,24 +42,38 @@ export class WarGameController extends GameController {
        this.assignElementToPlayer(model.deck_2, model.player_2);
        this.assignElementToPlayer(model.player2CollectSpace, model.player_2);
 
-       this.socket.on("getRandomCard$Request",  (deckHash) => { // data = deck
-           const deck: Deck =  this.getGameElementByHash(deckHash) as Deck;
-           const card: Card = this.deckController.getRandomCard();
-           this.assignElementToPlayer(card, deck.player); // assign card to player
-           card.posX  = deck.cardSpace.posX;
-           card.posY  = deck.cardSpace.posY;
-           this.model.cardsINturn.push(card);
-           this.socket.emit("getRandomCard$Response", card );
-           if (this.deckController.model.cards.length === 0) {
-                   //  that.removeElement(deckView);
-            }
-           if (this.model.cardsINturn.length % 2 === 0) {
-                   const winningCards = this.compareCards();
-                   if (winningCards.length === 1) {
-                       this.collectCardsForWinner(winningCards[0]);
+       for (const client of this.sockets) {
+           client.on("getRandomCard$Request",  (player, deckHash) => { // data = deck
+                const deck: Deck =  this.getGameElementByHash(deckHash) as Deck;
+                const isAssignedToPlayer = this.isElementAssignedToPlayer(deck, player);
+                if (player.name !== this.model.playerTurn.name || !isAssignedToPlayer ){
+                    console.log("Player:",  this.model.playerTurn.name, "from:", player);
+                    return;
+                }
+                console.log("Get random card request from:", player);
+
+                const card: Card = this.deckController.getRandomCard();
+                this.assignElementToPlayer(card, deck.player); // assign card to player
+                card.posX  = deck.cardSpace.posX;
+                card.posY  = deck.cardSpace.posY;
+                this.model.cardsINturn.push(card);
+                for (const clientToNotify of this.sockets) {
+                        clientToNotify.emit("getRandomCard$Response", card );
                     }
-            }
+
+                if (this.deckController.model.cards.length === 0) {
+                        //  that.removeElement(deckView);
+                    }
+                if (this.model.cardsINturn.length % 2 === 0) {
+                        const winningCards = this.compareCards();
+                        if (winningCards.length === 1) {
+                            this.collectCardsForWinner(winningCards[0]);
+                            }
+                    }
+                this.model.playerTurn = this.getNextPlayer();
        });
+        }
+
   };
 
     public collectCardsForWinner(winCard: Card) {
@@ -67,7 +83,9 @@ export class WarGameController extends GameController {
 
                 for (const cardToCollect of this.model.cardsINturn) {
                         cardToCollect.setPosition( collectSpace.posX + 100,  collectSpace.posY);
-                        this.socket.emit("updateCardPosition$Request", cardToCollect );
+                        for (const client of this.sockets) {
+                            client.emit("updateCardPosition$Request", cardToCollect );
+                         }
                         // cardToCollect.img.rotation = Math.floor(Math.random() * 360) + 1;
                         //cardToCollect.updateView();
                         this.model.cardsINturn = [];

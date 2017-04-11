@@ -6,6 +6,7 @@ import { Player } from "./Player";
 
 export class Game  {
     public players:  Player[];
+    public player: Player;
     public playersQueue: Player[];
     public board: Board;
     public gameElements: GameElement[] ;

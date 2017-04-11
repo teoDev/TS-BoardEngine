@@ -80,6 +80,19 @@ export class GameController  {
         return gameElements;
     }
 
+    public isElementAssignedToPlayer(gameElement: GameElement, player: Player): boolean{
+        let isAssigned = false;
+        if (this.model.elementsAssignedToPlayers.get(player.name) !== undefined) {
+             for (const gameEl of this.model.elementsAssignedToPlayers.get(player.name)) {
+                      if (gameEl.hash === gameElement.hash) {
+                          isAssigned = true;
+                          break;
+                      }
+                }
+        }
+        return isAssigned;
+    }
+
 
 
 }
