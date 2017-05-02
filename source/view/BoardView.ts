@@ -2,7 +2,8 @@ import {Board} from "../entities/board";
 import {GameElementView} from "./GameElementView";
 
  export  class BoardView extends GameElementView {
-   public imgSRC;
+    public imgSRC;
+    public viewElements : GameElementView[] = [];
     private width: number;
     private height: number;
 

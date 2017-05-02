@@ -1,11 +1,11 @@
-﻿import {Game} from './entities/Game';
-import {WarGame} from './example_games/WarGame/WarGame';
-import {WarGameController} from './example_games/WarGame/controller/WarGameController';
+﻿import {CheckersGame} from './example_games/Checkers/CheckersGame';
+import {Game} from './entities/Game';
 
 import express = require("express");
 import socketio = require("socket.io");
 import http = require("http");
-import {Player} from "./entities/Player";
+import { Player } from "./entities/Player";
+import { CheckersGameController } from "./example_games/Checkers/controller/CheckersGameController";
 
 const app = express();
 app.set("port", 8080);
@@ -66,8 +66,8 @@ class GameRoom {
 
   public initGame() {
    console.log("INIT GAME");
-   const warGame = new WarGame(this.players);
-   const warGameController = new WarGameController(warGame, this.sockets); //pass room socket
+   const warGame = new CheckersGame(this.players);
+   const warGameController = new CheckersGameController(warGame, this.sockets); //pass room socket
    io.in("room_" + this.roomID).emit("initGame", {game: warGame});
    warGameController.start();
   }
