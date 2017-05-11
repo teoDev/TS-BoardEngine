@@ -10,12 +10,12 @@ import { CheckersGameController } from "./example_games/Checkers/controller/Chec
 const app = express();
 app.set("port", 8080);
 
-
 const server = http.createServer(app);
 const io = socketio(server);
 server.listen(app.get("port"),  () => {
   console.log("Express server listening on port " + app.get("port"));
 });
+
 
 let counter = 0;
 

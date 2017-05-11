@@ -14,7 +14,10 @@ var gulp        = require("gulp"),
     runSequence = require("run-sequence"),
     mocha       = require("gulp-mocha"),
     istanbul    = require("gulp-istanbul"),
-    browserSync = require('browser-sync').create();
+    browserSync = require('browser-sync').create(),
+    rename     = require('gulp-rename'),
+    glob       = require('glob'),
+    es         = require('event-stream');
     
 //******************************************************************************
 //* LINT
@@ -41,7 +44,6 @@ var tsProject = tsc.createProject("tsconfig.json");
 gulp.task("build-app", function() {
     return gulp.src([
             "source/**/**.ts",
-             "source/**/**.tsx",
             "typings/main.d.ts/",
             "source/interfaces/interfaces.d.ts"
         ])
@@ -91,6 +93,28 @@ gulp.task("test", ["istanbul:hook"], function() {
 //******************************************************************************
 //* BUNDLE
 //******************************************************************************
+
+gulp.task('bundle-all-game-views', function(done) {
+    glob('source/**/**GameMain.js', function(err, files) {
+        if(err) done(err);
+
+        var tasks = files.map(function(entry) {
+            return browserify({ entries: [entry], debug: true,
+        standalone : "game" })
+                .bundle()
+                .pipe(source(entry))
+                .pipe(rename({
+                    extname: '.bundle.js'
+                }))
+                .pipe(buffer())
+                .pipe(sourcemaps.init({ loadMaps: true }))
+               // .pipe(uglify())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest('./dist'));
+            });
+        es.merge(tasks).on('end', done);
+    })
+});
 gulp.task("bundle", function() {
   
     var libraryName = "myapp";
@@ -108,7 +132,7 @@ gulp.task("bundle", function() {
         .pipe(source(outputFileName))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(outputFolder));
 });
@@ -130,6 +154,6 @@ gulp.task("watch", ["default"], function () {
 //* DEFAULT
 //******************************************************************************
 gulp.task("default", function (cb) {
-    runSequence( "build", "test", "bundle", cb);
+    runSequence( "build", "test", "bundle", "bundle-all-game-views", cb);
     //     runSequence("lint", "build", "test", "bundle", cb);
 });

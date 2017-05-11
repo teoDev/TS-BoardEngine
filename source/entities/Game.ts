@@ -13,6 +13,7 @@ export class Game  {
     public playerTurn: Player;
     public cardsINturn: Card[];
     public elementsAssignedToPlayers: Map<string, GameElement[]>; // key:playerID
+    public id;
 
    constructor() {
         this.gameElements = [];

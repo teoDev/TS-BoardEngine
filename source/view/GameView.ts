@@ -69,16 +69,25 @@ export class GameView  {
         boardContainer.addChild(gameElementImg);
 
         if (gameElementView.draggable) {
-                    gameElementImg.on("pressmove", function(evt: any) {
-                    evt.target.x = evt.stageX /  boardContainer.scaleX;
-                    evt.target.y = evt.stageY /  boardContainer.scaleY;
+                gameElementImg.on("pressmove", (evt: any) => {
+    
+                    evt.target.x = evt.stageX /  boardContainer.scaleX -(gameElementImg.image.width*gameElementImg.scaleX/2);
+                    evt.target.y = evt.stageY /  boardContainer.scaleY -(gameElementImg.image.height*gameElementImg.scaleY/2);
                     boardContainer.setChildIndex( gameElementImg, boardContainer.getNumChildren() - 1);
+                    if (gameElementView.dragCallback !== undefined){
+                        gameElementView.dragCallback(evt,gameElementView);
+                    }
+                });
+                gameElementImg.on("pressup", (evt: any) => {
+                    gameElementView.dragStopCallback(evt,gameElementView);
                 });
              }
              // assign click callback
         if (gameElementView.clickCallback !== undefined){
                  gameElementImg.on("click", gameElementView.clickCallback.bind(null,gameElementView.model));
-             }
+        }
+
+        
         gameElementImg.scaleX =  gameElementView.scaleX;
         gameElementImg.scaleY =  gameElementView.scaleY;
         gameElementImg.x = gameElementView.model.posX;

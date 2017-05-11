@@ -13,6 +13,8 @@ export  class GameElementView implements Drawable {
     public clickable = false;
 
     public clickCallback;
+    public dragCallback;
+    public dragStopCallback;
 
     public constructor(gameElementModel: GameElement) {
         this.model = gameElementModel;
