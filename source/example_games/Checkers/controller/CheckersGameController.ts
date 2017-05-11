@@ -1,4 +1,5 @@
 import {CollectSpace} from '../../../entities/CollectSpace';
+import { Checker } from "./../entities/Checker";
 import { CheckersGame } from "./../CheckersGame";
 import {Card} from '../../../entities/card';
 import { GameController } from "./../../../controller/GameController";
@@ -18,8 +19,11 @@ export class CheckersGameController extends GameController {
 
 
        for (const client of this.sockets) {
-           client.on("getRandomCard$Request",  (player, deckHash) => { // data = deck
-
+           client.on("updateCheckerPosition$Request",  (player, checkerHash,targetCol,targetRow) => { // data = deck
+               console.log("reacting for UPDATE CHECKER POSITION");
+               const checker: Checker =  this.getGameElementByHash(checkerHash) as Checker;
+               checker.xAxis = targetCol;
+               checker.yAxis = targetRow;
        });
         }
 

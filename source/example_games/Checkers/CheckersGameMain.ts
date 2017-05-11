@@ -11,7 +11,7 @@ let player;
 
 function joinGame(socket) {
   if (socket !== undefined) {
-    socket.emit("joinGame", "player");
+    socket.emit("joinGame", "player", sessionStorage.getItem("gameToken"));
   }
 }
 
@@ -21,7 +21,8 @@ $( document ).ready(() => {
    player = playerFromServ;
   });
  io.on("initGame",  (data) => {
-   console.log("Data from server:", data.game, " Player:", player);
+   console.log("Data from server:", data.game, " Player:", player, " gameToken:",data.gameToken);
+   sessionStorage.setItem("gameToken", data.gameToken);
    const gameView = new CheckersGameView(data.game as CheckersGame, io);
    gameView.model.player = player;
    gameView.initRender();

@@ -1,21 +1,22 @@
+import {GameController} from '../../../controller/GameController';
 import {WarGameController} from '../controller/WarGameController';
 import {WarGame} from '../WarGame';
 import { GameServer } from "../../../server/GameServer";
 import { GameRoom } from "../../../server/GameRoom";
+import { Game } from "../../../entities/Game";
 
 export class WarGameServer extends GameServer{
 
-
-  public initGame(gameRoom:GameRoom ) {
-   console.log("INIT GAME: WARGAME");
-   const checkersGame = new WarGame(gameRoom.players);
-   const checkerGameController = new WarGameController(checkersGame, gameRoom.sockets); //pass room socket
-
-   for (const client of gameRoom.sockets) {
-            client.in("room_" + gameRoom.roomID).emit("initGame", {game: checkersGame});
-    }
-   checkerGameController.start();
+  public initGame(gameRoom: GameRoom ): Game {
+   console.log("INIT GAME : CHECKERS");
+   const gameModel =  new WarGame(gameRoom.players);
+   return gameModel;
   }
+
+  public initController(gameModel,sockets):GameController{
+     return new WarGameController(gameModel, sockets); // pass room socket
+  }
+
 
 }
 

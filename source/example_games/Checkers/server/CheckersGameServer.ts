@@ -1,26 +1,26 @@
-﻿import {CheckersGame} from '../CheckersGame';
-import {CheckersGameController} from '../controller/CheckersGameController';
+﻿import {Game} from '../../../entities/Game';
+import {GameController} from "../../../controller/GameController";
+import {CheckersGame} from "../CheckersGame";
+import {CheckersGameController} from "../controller/CheckersGameController";
 import { GameServer } from "../../../server/GameServer";
 import { GameRoom } from "../../../server/GameRoom";
 
 export class CheckersGameServer extends GameServer{
-
-
-  public initGame(gameRoom: GameRoom ) {
+  public initGame(gameRoom: GameRoom ):Game {
    console.log("INIT GAME : CHECKERS");
-   const checkersGame = new CheckersGame(gameRoom.players);
-   const warGameController = new CheckersGameController(checkersGame, gameRoom.sockets); // pass room socket
-
-   for (const client of gameRoom.sockets) {
-            client.in("room_" + gameRoom.roomID).emit("initGame", {game: checkersGame});
-    }
-   warGameController.start();
-
+   const gameModel =  new CheckersGame(gameRoom.players);
+   return gameModel;
   }
 
+  public initController(gameModel,sockets):GameController{
+     return new CheckersGameController(gameModel, sockets); // pass room socket
+  }
+
+
+
   public addNotifier(){
-     this.app.get("/" + "Checkers" + "/isUp", (req, res)=>{
-        res.json({"up": "true"});
+     this.app.get("/" + "Checkers" + "/isUp", (req, res) => {
+        res.json({up: "true"});
 
     });
   }

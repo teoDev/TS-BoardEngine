@@ -1,14 +1,18 @@
-import {GameElement} from '../entities/GameElement';
-import {Player} from '../entities/Player';
-import {Game} from '../entities/Game';
+import {GameElement} from "../entities/GameElement";
+import {Player} from "../entities/Player";
+import {Game} from "../entities/Game";
+// import mongo = require("mongodb");
+
 
 
 export class GameController  {
     public model: Game;
     public socket: SocketIOClient.Socket;
 
+
    constructor(model: Game) {
        this.model = model;
+      
    }
 
    public start() {

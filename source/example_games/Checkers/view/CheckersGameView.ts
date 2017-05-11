@@ -32,6 +32,7 @@ export class CheckersGameView extends GameView {
                     view.img.x= column * 78;
                     view.img.y = row * 78;
                     console.log('Drag stop');
+                    socket.emit("updateCheckerPosition$Request", this.model.player, view.model.hash,column,row);
                    // view.updatePosition();
                 };
 
@@ -53,7 +54,6 @@ export class CheckersGameView extends GameView {
                 this.gameViewElements.push(blackChecker);
         }
 
-       
 
 
 
