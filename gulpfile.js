@@ -154,6 +154,6 @@ gulp.task("watch", ["default"], function () {
 //* DEFAULT
 //******************************************************************************
 gulp.task("default", function (cb) {
-    runSequence( "build", "test", "bundle", "bundle-all-game-views", cb);
+    runSequence( "build", "test", "bundle-all-game-views", cb);
     //     runSequence("lint", "build", "test", "bundle", cb);
 });
