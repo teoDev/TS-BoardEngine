@@ -24,6 +24,11 @@ export class GameController  {
         this.model.gameElements.push(gameElement);
     }
 
+    public addGameElements( gameElements: GameElement[]) {
+        console.log("Adding:",gameElements);
+        this.model.gameElements = this.model.gameElements.concat(gameElements);
+    }
+
     public addPlayer( playerToAdd: Player) {
         this.model.players.push(playerToAdd);
     }
@@ -45,8 +50,10 @@ export class GameController  {
 
 
     public getGameElementByHash( hash: string): GameElement {
+        console.log("Hash search:",hash);
         for (const gameElement of this.model.gameElements) {
              if (gameElement.hash ===  hash) {
+                 console.log("Hash:",gameElement.hash,hash);
                  return gameElement;
              }
         }

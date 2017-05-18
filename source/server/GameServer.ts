@@ -50,7 +50,7 @@ export abstract class GameServer {
   }
 
    public abstract initGame(gameRoom: GameRoom ):Game ;
-   public abstract initController(gameRoom: GameRoom, sockets ): GameController ;
+   public abstract initController(game: Game, sockets ): GameController ;
 
 
   public addRoom(room: GameRoom) {
@@ -91,7 +91,8 @@ export abstract class GameServer {
             }
         }
         if(joinToExistingRoom){
-             const player = roomToJoin.game.players[0];
+             const player = roomToJoin.game.players[0]; // be a correct player
+             roomToJoin.sockets.push(clientSocket);
              clientSocket.emit("joinGame$Respond", player, gameToken);
              clientSocket.emit("initGame", {game: roomToJoin.game, gameToken:roomToJoin.game.hash});
              console.log(playerName + " joined the existing game in room:", roomToJoin.roomID);
@@ -133,7 +134,7 @@ export abstract class GameServer {
                     for (const client of roomToJoin.sockets) {
                          client.in("room_" + roomToJoin.roomID).emit("initGame", {game: gameModel, gameToken:gameModel.hash});
                     }
-                    this.initController(roomToJoin, roomToJoin.sockets);
+                    this.initController(roomToJoin.game, roomToJoin.sockets);
                     });
              }
         }

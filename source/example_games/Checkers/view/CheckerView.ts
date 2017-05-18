@@ -10,6 +10,7 @@ export class CheckerView extends GameElementView {
         this.scaleY = 0.8;
         this.draggable = true;
     }
+    
 
 }
 

@@ -1,7 +1,5 @@
-import {CollectSpace} from '../../../entities/CollectSpace';
 import { Checker } from "./../entities/Checker";
 import { CheckersGame } from "./../CheckersGame";
-import {Card} from '../../../entities/card';
 import { GameController } from "./../../../controller/GameController";
 
 export class CheckersGameController extends GameController {
@@ -10,51 +8,37 @@ export class CheckersGameController extends GameController {
     public sockets= [];
 
 
-   constructor(model: CheckersGame, socket) {
+   constructor(model: CheckersGame, sockets) {
        super(model);
 
+       this.addGameElements(model.player_1_checkers);
+       this.addGameElements(model.player_2_checkers);
 
-       this.sockets = socket;
-       this.model.cardsINturn = [] ;
-
+       this.sockets = sockets;
 
        for (const client of this.sockets) {
-           client.on("updateCheckerPosition$Request",  (player, checkerHash,targetCol,targetRow) => { // data = deck
-               console.log("reacting for UPDATE CHECKER POSITION");
+           client.on("moveChecker$Request",  (player, checkerHash,targetCol,targetRow) => {
+               console.log("reacting for MOVE CHECKER POSITION");
                const checker: Checker =  this.getGameElementByHash(checkerHash) as Checker;
-               checker.xAxis = targetCol;
-               checker.yAxis = targetRow;
-       });
+               console.log("CH:",this.setPositionByAxis);
+               this.setPositionByAxis(checker,targetCol,targetRow);
+               for (const client of this.sockets) {
+                            client.emit("moveChecker$Response", checker );
+                }
+             });
         }
 
   };
 
-    public collectCardsForWinner(winCard: Card) {
-                console.log("winner: ", winCard.player);
-                let collectSpace: CollectSpace;
-                collectSpace = this.getElementsAssignedToPlayerByType(winCard.player, CollectSpace.name).pop() as CollectSpace;
+   public updatePositionBasedOnAxis(checker:Checker){
+         checker.posX = checker.xAxis * 78;
+         checker.posY = checker.yAxis * 78;
+    }
 
-                for (const cardToCollect of this.model.cardsINturn) {
-                        cardToCollect.setPosition( collectSpace.posX + 100,  collectSpace.posY);
-                        for (const client of this.sockets) {
-                            client.emit("updateCardPosition$Request", cardToCollect );
-                         }
-                        // cardToCollect.img.rotation = Math.floor(Math.random() * 360) + 1;
-                        //cardToCollect.updateView();
-                        this.model.cardsINturn = [];
-                }
-        };
+     public setPositionByAxis(checker:Checker, xAxis: number, yAxis: number) {
+        checker.xAxis = xAxis;
+        checker.yAxis = yAxis;
+        this.updatePositionBasedOnAxis(checker);
+    }
 
-   // returns cards with higher value
-   public compareCards(): Card[] {
-        const card1: Card = this.model.cardsINturn[this.model.cardsINturn.length - 1];
-        const card2: Card = this.model.cardsINturn[this.model.cardsINturn.length - 2];
-        if (card1.getValue() === card2.getValue()) {
-             return [card1, card2];
-        }else if (card1.getValue() > card2.getValue()) {
-            return [card1];
-        }else if (card1.getValue() < card2.getValue()) {
-            return [card2];
-        }
-   }
 }

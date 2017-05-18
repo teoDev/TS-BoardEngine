@@ -12,7 +12,10 @@ export class Checker extends GameElement {
         this.type = type;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
+        this.posX = this.xAxis * 78;
+        this.posY = this.yAxis * 78;
     }
+
 
 }
 

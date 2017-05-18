@@ -10,7 +10,7 @@
     <style>
 
 
-.portfolio-item {
+.game-item {
     margin-bottom: 25px;
 }
 
@@ -38,7 +38,7 @@ footer {
 
         <!-- Projects Row -->
         <div class="row">
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <a href="/checkers.html">
                 
                     <img class="img-responsive" src="img\CheckersGame-image.jpg" alt="CheckersGame">
@@ -48,7 +48,7 @@ footer {
                  </div>
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 
                 <a href="warGame.html">
                     <img class="img-responsive" src="img\WarGame-image.jpg" alt="WarGame">
@@ -58,7 +58,7 @@ footer {
                     </div>
                  </div>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 
                 <a href="#">
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
@@ -68,7 +68,7 @@ footer {
                     </div>
                  </div>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                
                 <a href="#">
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
@@ -83,7 +83,7 @@ footer {
 
         <!-- Projects Row -->
         <div class="row">
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -92,7 +92,7 @@ footer {
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -101,7 +101,7 @@ footer {
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -110,7 +110,7 @@ footer {
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -124,7 +124,7 @@ footer {
 
         <!-- Projects Row -->
         <div class="row">
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -133,7 +133,7 @@ footer {
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -142,7 +142,7 @@ footer {
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -151,7 +151,7 @@ footer {
                     <img class="img-responsive" src="http://placehold.it/750x450" alt="">
                 </a>
             </div>
-            <div class="col-md-3 portfolio-item">
+            <div class="col-md-3 game-item">
                 <div class="progress" style="margin-bottom:0px">
                      <div class="progress-bar progress-bar-danger" role="progressbar" style="width:100%">
                     </div>
@@ -216,9 +216,13 @@ footer {
     <!-- Bootstrap Core JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script>
+
+        $( ".game-item" ).each(function( index ) {
+             console.log( index + ": " + $( this ).text() );
+        });
     (function poll() {
     $.ajax({
-        url: "http://192.168.0.101:8080/checkers/isup",
+        url: "http://192.168.200.4:8080/checkers/isup",
         type: "GET",
         success: function(data) {
             console.log("polling");
