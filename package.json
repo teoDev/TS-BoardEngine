@@ -62,6 +62,7 @@
     "easeljs": "0.0.0",
     "express": "^4.14.1",
     "jquery": "^3.1.1",
+    "monk": "^5.0.2",
     "object-hash": "^1.1.7",
     "react-bootstrap": "^0.30.7",
     "socket.io": "^2.0.1",
