@@ -66,6 +66,7 @@
     "object-hash": "^1.1.7",
     "react-bootstrap": "^0.30.7",
     "socket.io": "^2.0.1",
+    "socket.io-client": "^2.0.1",
     "tslint-react": "^2.3.0"
   }
 }
