@@ -5,7 +5,7 @@ import {CheckersGameView} from './view/CheckersGameView';
 import * as $ from "jquery";
 
 
-const socketService = new SocketService();
+const socketService = new SocketService("192.168.43.241", "8080");
 const io = socketService.getSocket();
 let player;
 

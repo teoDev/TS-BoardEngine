@@ -30,7 +30,7 @@ export abstract class GameServer {
 
 
     this.app = express();
-    this.app.set("port", 8080);
+    this.app.set("port", process.env.SERVER_PORT);
 
     this.app.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
@@ -134,7 +134,7 @@ export abstract class GameServer {
                     for (const client of roomToJoin.sockets) {
                          client.in("room_" + roomToJoin.roomID).emit("initGame", {game: gameModel, gameToken:gameModel.hash});
                     }
-                    this.initController(roomToJoin.game, roomToJoin.sockets);
+                    this.initController(roomToJoin.game, roomToJoin.sockets).start();
                     });
              }
         }

@@ -43,10 +43,13 @@ export class WarGameController extends GameController {
        this.assignElementToPlayer(model.deck_2, model.player_2);
        this.assignElementToPlayer(model.player2CollectSpace, model.player_2);
 
+       
+
        for (const client of this.sockets) {
            client.on("getRandomCard$Request",  (player, deckHash) => { // data = deck
                 const deck: Deck =  this.getGameElementByHash(deckHash) as Deck;
                 const isAssignedToPlayer = this.isElementAssignedToPlayer(deck, player);
+                console.log(player);
                 if (player.name !== this.model.playerTurn.name || !isAssignedToPlayer ){
                     console.log("Player:",  this.model.playerTurn.name, "from:", player);
                     return;

@@ -1,10 +1,10 @@
-import {WarGame} from './WarGame';
-import {WarGameView} from './View/WarGameView';
-import {SocketService} from '../../utils/SocketService';
+import {WarGame} from "./WarGame";
+import {WarGameView} from "./View/WarGameView";
+import {SocketService} from "../../utils/SocketService";
 import * as $ from "jquery";
 
 
-const socketService = new SocketService();
+const socketService = new SocketService("192.168.43.241", "8081");
 const io = socketService.getSocket();
 let player;
 
